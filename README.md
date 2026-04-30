@@ -25,7 +25,15 @@ camdict привет
 
 Cambridge entries show CEFR level, grammar codes, UK/US pronunciation, Chinese translations, and example sentences. Russian entries include stress marks, industry meanings, and conjugation/declension tables.
 
-Falls back to the English-only Cambridge dictionary when a word has no bilingual entry.
+### Lookup flow
+
+3 HTTP requests fire in parallel: Cambridge (zh), Cambridge (en), and Bing. Priority order:
+
+1. Cambridge Chinese-English (fastest path)
+2. Cambridge English-only
+3. [Bing Dictionary](https://cn.bing.com/dict) (fallback)
+
+When Cambridge misses a word (e.g. `genshin`), Bing takes over automatically.
 
 ## Shell completion
 
@@ -41,7 +49,7 @@ cp completions/camdict.fish ~/.config/fish/completions/
 echo 'source /path/to/completions/camdict.bash' >> ~/.bashrc
 ```
 
-Completions are sourced from `/usr/share/dict` (american-english, british-english) and work with both `pip install` and the standalone binary.
+Completions are sourced from bundled word lists (american-english + british-english) and work with both `pip install` and the standalone binary.
 
 ## Build standalone binary
 

@@ -33,7 +33,6 @@ HEADERS = {
 }
 
 
-
 def _text(el) -> str:
     """Get cleaned, whitespace-normalised text of an element."""
     if el is None:

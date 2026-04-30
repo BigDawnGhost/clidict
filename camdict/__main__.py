@@ -7,6 +7,7 @@ camdict пока   → 千亿词霸 Russian-Chinese dictionary (auto-detected)
 import os
 import subprocess
 import sys
+from typing import NoReturn
 
 import requests
 from rich.pager import Pager
@@ -19,8 +20,7 @@ from camdict.render import console, print_entry, print_qianyix_entry
 class _LessPager(Pager):
     """less with -F (quit-if-one-screen), -R (colors), -X (no clear on exit)."""
 
-    @staticmethod
-    def show(content: str) -> None:
+    def show(self, content: str) -> None:  # type: ignore[override]
         env = {**os.environ, "LESSCHARSET": "utf-8"}
         try:
             subprocess.run(["less", "-FRX"], input=content.encode("utf-8"), env=env)
@@ -30,7 +30,7 @@ class _LessPager(Pager):
             sys.stdout.write(content)
 
 
-def _die(msg: str) -> None:
+def _die(msg: str) -> NoReturn:
     console.print(f"\n  ❌ {msg}\n", style=STYLE_ERROR)
     sys.exit(1)
 
@@ -54,7 +54,7 @@ def _lookup_qianyix(word: str) -> None:
 
     try:
         parser = QianyixParser.from_url(word)
-    except requests.HTTPError:
+    except requests.RequestException:
         _die(f"网络请求失败，无法访问千亿词霸: {word}")
 
     if not parser.is_valid_entry():
@@ -67,7 +67,7 @@ def _lookup_cambridge(word: str) -> None:
     """Look up *word* on Cambridge Dictionary, render and exit."""
     try:
         parser = CambridgeParser.from_url(word)
-    except requests.HTTPError:
+    except requests.RequestException:
         _die(f"网络请求失败，无法访问剑桥词典: {word}")
 
     if not parser.is_valid_entry():

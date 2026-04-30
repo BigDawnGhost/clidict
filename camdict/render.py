@@ -70,6 +70,10 @@ def _render_entry(entry: dict) -> Text:
                 out.append(f" [{sense['level']}]", style=STYLE_LEVEL)
             if sense.get("grammar"):
                 out.append(f" {sense['grammar']}", style=STYLE_GRAMMAR)
+            if sense.get("usage"):
+                if sense.get("level") or sense.get("grammar"):
+                    out.append(" ")
+                out.append(f"[{sense['usage']}]", style=STYLE_USAGE)
             out.append("\n    ")
             if sense.get("definition_en"):
                 out.append(sense["definition_en"], style=STYLE_DEF_EN)

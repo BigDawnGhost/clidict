@@ -1,7 +1,5 @@
 """Robustness tests for camdict.parsers.qianyix."""
 
-import pytest
-
 from camdict.parsers.qianyix import QianyixParser, _extract_stress, _text
 
 

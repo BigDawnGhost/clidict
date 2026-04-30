@@ -11,7 +11,7 @@ _RETRY_STATUS = frozenset({429, 500, 502, 503, 504})
 _MAX_RETRIES = 3
 _BACKOFF_BASE = 1.0  # seconds; delays: 1s, 2s, 4s
 _BACKOFF_MAX = 8.0
-_JITTER = 0.3        # ± uniform jitter added to each delay
+_JITTER = 0.3  # ± uniform jitter added to each delay
 
 
 def fetch(url: str, headers: dict, timeout: int = 10) -> requests.Response:
@@ -30,8 +30,10 @@ def fetch(url: str, headers: dict, timeout: int = 10) -> requests.Response:
 
         try:
             resp = requests.get(url, headers=headers, timeout=timeout)
-        except (requests.exceptions.ConnectionError,
-                requests.exceptions.Timeout) as exc:
+        except (
+            requests.exceptions.ConnectionError,
+            requests.exceptions.Timeout,
+        ) as exc:
             last_exc = exc
             continue
 
@@ -41,4 +43,5 @@ def fetch(url: str, headers: dict, timeout: int = 10) -> requests.Response:
 
         last_exc = requests.exceptions.HTTPError(response=resp)
 
-    raise last_exc  # type: ignore[misc]
+    assert last_exc is not None
+    raise last_exc

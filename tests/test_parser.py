@@ -1,6 +1,5 @@
 """Robustness tests for camdict.parsers.cambridge.CambridgeParser."""
 
-import pytest
 from lxml import html as lxml_html
 
 from camdict.parsers.cambridge import CambridgeParser, _text
@@ -228,6 +227,18 @@ def test_invalid_cefr_ignored():
       <span class="trans dtrans dtrans-se">释义</span>
     </div></body></html>"""
     assert CambridgeParser(html).get_senses()[0]["level"] == ""
+
+
+def test_grammar_code_extracted():
+    html = """<html><body>
+    <div class="def-block ddef_block">
+      <span class="def-info ddef-info">
+        <span class="gram dgram">[I or T]</span>
+      </span>
+      <div class="def ddef_d db">to move</div>
+      <span class="trans dtrans dtrans-se">移动</span>
+    </div></body></html>"""
+    assert CambridgeParser(html).get_senses()[0]["grammar"] == "[I or T]"
 
 
 def test_multiple_senses():

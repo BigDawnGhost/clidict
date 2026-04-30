@@ -267,5 +267,5 @@ def print_bing_entry(entry: dict) -> None:
         out.append(item["zh"], style=STYLE_DEF_ZH)
 
     out.append("\n\n  ", style=STYLE_GRAMMAR)
-    out.append("[Bing 词典]", style=STYLE_GRAMMAR)
+    out.append("（简要释义，来源：Bing 词典）", style=STYLE_GRAMMAR)
     console.print(out)

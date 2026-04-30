@@ -4,6 +4,7 @@ camdict hello  → Cambridge English-Chinese dictionary (auto-detected)
 camdict пока   → 千亿词霸 Russian-Chinese dictionary (auto-detected)
 """
 
+import logging
 import os
 import subprocess
 import sys
@@ -19,6 +20,8 @@ from camdict.config import ENTRY_URL, ENTRY_URL_EN, HEADERS, STYLE_ERROR, STYLE_
 from camdict.http import fetch as _raw_fetch
 from camdict.parsers.cambridge import CambridgeParser
 from camdict.render import console, print_bing_entry, print_entry, print_qianyix_entry
+
+logger = logging.getLogger(__name__)
 
 
 class _LessPager(Pager):
@@ -95,28 +98,31 @@ def _lookup_cambridge(word: str) -> None:
     """Look up *word* — Cambridge (zh + en) and Bing, 3 parallel requests.
 
     Priority: Cambridge zh > Cambridge en > Bing.
-    Bing result is held back until both Cambridge requests finish.
+    zh always wins; en only used when zh misses.
     """
     from camdict.parsers.bing import BingParser
 
-    cam_result: dict | None = None
+    cam_zh_result: dict | None = None
+    cam_en_result: dict | None = None
     bing_result: dict | None = None
+    zh_done: bool = False
 
     def _cam_zh():
-        nonlocal cam_result
+        nonlocal cam_zh_result, zh_done
         url = ENTRY_URL.format(word=word.strip().lower())
         resp = _raw_fetch(url, headers=HEADERS)
         p = CambridgeParser(resp.text, url=url)
         if p.is_valid_entry():
-            cam_result = p.parse()
+            cam_zh_result = p.parse()
+        zh_done = True
 
     def _cam_en():
-        nonlocal cam_result
+        nonlocal cam_en_result
         url = ENTRY_URL_EN.format(word=word.strip().lower())
         resp = _raw_fetch(url, headers=HEADERS)
         p = CambridgeParser(resp.text, url=url, en_only=True)
-        if p.is_valid_entry() and cam_result is None:
-            cam_result = p.parse()
+        if p.is_valid_entry():
+            cam_en_result = p.parse()
 
     def _bing():
         nonlocal bing_result
@@ -143,11 +149,19 @@ def _lookup_cambridge(word: str) -> None:
                 fut.result()
             except requests.RequestException:
                 pass
-            # Cambridge (zh or en) wins immediately
-            if cam_result is not None:
+            except Exception:
+                logger.debug(
+                    "Unexpected error in future %s", futures[fut], exc_info=True
+                )
+            # zh wins immediately — cancel the rest
+            if cam_zh_result is not None:
                 for f in futures:
                     f.cancel()
-                _print(print_entry, cam_result)
+                _print(print_entry, cam_zh_result)
+                return
+            # zh done & missed, en ready — use it, don't wait for Bing
+            if cam_en_result is not None and zh_done:
+                _print(print_entry, cam_en_result)
                 return
 
     # Both Cambridge missed — use Bing if available

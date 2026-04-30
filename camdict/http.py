@@ -14,7 +14,9 @@ _BACKOFF_MAX = 8.0
 _JITTER = 0.3  # ± uniform jitter added to each delay
 
 
-def fetch(url: str, headers: dict, timeout: int = 10, cookies: dict = None) -> requests.Response:
+def fetch(
+    url: str, headers: dict, timeout: int = 10, cookies: dict | None = None
+) -> requests.Response:
     """GET *url* with retry on transient network and server errors.
 
     Retry schedule (before jitter): 1 s, 2 s, 4 s.

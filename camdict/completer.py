@@ -1,6 +1,7 @@
 """Word autocompletion using bundled dictionary files."""
 
 import bisect
+import threading
 from pathlib import Path
 
 _DATA_DIR = Path(__file__).parent / "data"
@@ -9,6 +10,7 @@ _DICT_FILES = ("american-english", "british-english")
 # ── load ──
 
 _words: list[str] = []
+_lock = threading.Lock()
 
 
 def _load() -> list[str]:
@@ -26,8 +28,11 @@ def _load() -> list[str]:
 
 def _ensure_loaded() -> None:
     global _words
-    if not _words:
-        _words = _load()
+    if _words:
+        return
+    with _lock:
+        if not _words:
+            _words = _load()
 
 
 # ── public API ──

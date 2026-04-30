@@ -1,7 +1,7 @@
-"""CLI entry point — ``python -m camdict <word>`` or ``camdict -r <word>``.
+"""CLI entry point — ``camdict <word>``.
 
-camdict hello       → Cambridge English-Chinese dictionary
-camdict -r пока     → 千亿词霸 Russian-Chinese dictionary
+camdict hello  → Cambridge English-Chinese dictionary (auto-detected)
+camdict пока   → 千亿词霸 Russian-Chinese dictionary (auto-detected)
 """
 
 import os
@@ -33,6 +33,11 @@ class _LessPager(Pager):
 def _die(msg: str) -> None:
     console.print(f"\n  ❌ {msg}\n", style=STYLE_ERROR)
     sys.exit(1)
+
+
+def _is_cyrillic(text: str) -> bool:
+    """Return True if *text* contains any Cyrillic character."""
+    return any("\u0400" <= ch <= "\u04ff" or "\u0500" <= ch <= "\u052f" for ch in text)
 
 
 def _print(render_fn, entry: dict) -> None:
@@ -75,15 +80,14 @@ def main() -> None:
     args = sys.argv[1:]
 
     if not args:
-        _die("用法: camdict <英文单词>  或  camdict -r <俄文单词>")
+        _die("用法: camdict <单词>  (自动识别英语/俄语)")
 
-    if args[0] == "-r":
-        if len(args) < 2:
-            _die("用法: camdict -r <俄文单词>")
-        _lookup_qianyix(args[1])
-        return
+    word = args[0]
 
-    _lookup_cambridge(args[0])
+    if _is_cyrillic(word):
+        _lookup_qianyix(word)
+    else:
+        _lookup_cambridge(word)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,26 @@
+[project]
+name = "camdict"
+version = "0.1.0"
+description = "📖 Cambridge Dictionary (英汉) terminal lookup"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "lxml>=6.1.0",
+    "requests>=2.33.1",
+    "rich>=15.0.0",
+]
+
+[project.scripts]
+camdict = "camdict.__main__:main"
+
+[build-system]
+requires = ["setuptools>=70.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["camdict*"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+]

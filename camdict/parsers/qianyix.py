@@ -20,17 +20,13 @@ from urllib.parse import quote
 
 from lxml import html
 
+from camdict.config import USER_AGENT
 from camdict.http import fetch
 
 BASE_URL = "https://w.qianyix.com/index.php"
 SEARCH_URL = BASE_URL + "?q={word}"
 
-HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-        "(KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
-    ),
-}
+HEADERS = {"User-Agent": USER_AGENT}
 
 
 def _text(el) -> str:

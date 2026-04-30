@@ -1,10 +1,11 @@
 """Core parser for Cambridge Dictionary (AMP) entry pages."""
 
 import re
+from concurrent.futures import ThreadPoolExecutor
 
 from lxml import html
 
-from camdict.config import ENTRY_URL, HEADERS
+from camdict.config import ENTRY_URL, ENTRY_URL_EN, HEADERS
 from camdict.http import fetch
 
 
@@ -59,15 +60,27 @@ class CambridgeParser:
         "mainly us",
     )
 
-    def __init__(self, html_content: str, url: str = "") -> None:
+    def __init__(self, html_content: str, url: str = "", en_only: bool = False) -> None:
         self.tree = html.fromstring(html_content)
         self.url = url
+        self.en_only = en_only  # True when using English-only fallback
 
     @classmethod
     def from_url(cls, word: str, timeout: int = 10) -> "CambridgeParser":
-        url = ENTRY_URL.format(word=word.strip().lower())
-        resp = fetch(url, headers=HEADERS, timeout=timeout)
-        return cls(resp.text, url=url)
+        w = word.strip().lower()
+        url_bi = ENTRY_URL.format(word=w)
+        url_en = ENTRY_URL_EN.format(word=w)
+
+        pool = ThreadPoolExecutor(max_workers=2)
+        fut_bi = pool.submit(fetch, url_bi, HEADERS, timeout)
+        fut_en = pool.submit(fetch, url_en, HEADERS, timeout)
+        pool.shutdown(wait=False)
+
+        parser = cls(fut_bi.result().text, url=url_bi)
+        if parser.is_valid_entry():
+            return parser
+
+        return cls(fut_en.result().text, url=url_en, en_only=True)
 
     def get_headword(self) -> str:
         hw = self.tree.xpath('//span[contains(@class,"headword")]')
@@ -194,8 +207,7 @@ class CambridgeParser:
                     zh_text = _text(next_span[0])
             if zh_text:
                 sense["examples"].append({"en": en_text, "zh": zh_text})
-            elif sense.get("phrase"):
-                # Phrase entries keep English-only examples
+            else:
                 sense["examples"].append({"en": en_text, "zh": ""})
         return sense
 
@@ -221,8 +233,7 @@ class CambridgeParser:
             title = pb.xpath('.//span[contains(@class,"phrase-title")]')
             if title:
                 sense["phrase"] = _text(title[0])
-            # Reuse _parse_def_block on the nested def-block,
-            # passing phrase title so English-only examples are kept
+            # Reuse _parse_def_block on the nested def-block
             nested = pb.xpath('.//div[contains(@class,"def-block")]')
             if nested:
                 db = self._parse_def_block(nested[0], phrase=sense["phrase"])
@@ -230,9 +241,7 @@ class CambridgeParser:
             if sense["definition_en"] or sense["definition_zh"]:
                 phrases.append(sense)
         # Sort: phrases with zh examples first, English-only last
-        phrases.sort(key=lambda s: not any(
-            ex.get("zh") for ex in s["examples"]
-        ))
+        phrases.sort(key=lambda s: not any(ex.get("zh") for ex in s["examples"]))
         return phrases
 
     def parse(self) -> dict:

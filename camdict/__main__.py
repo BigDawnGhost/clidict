@@ -11,8 +11,10 @@ from typing import NoReturn
 
 import requests
 from rich.pager import Pager
+from rich.text import Text
 
-from camdict.config import STYLE_ERROR
+from camdict.completer import complete as _complete_words
+from camdict.config import STYLE_ERROR, STYLE_WORD
 from camdict.parsers.cambridge import CambridgeParser
 from camdict.render import console, print_entry, print_qianyix_entry
 
@@ -30,9 +32,33 @@ class _LessPager(Pager):
             sys.stdout.write(content)
 
 
-def _die(msg: str) -> NoReturn:
+def _die(msg: str, completions: str = "") -> NoReturn:
     console.print(f"\n  ❌ {msg}\n", style=STYLE_ERROR)
+    if completions:
+        _show_completions(completions)
     sys.exit(1)
+
+
+def _show_completions(prefix: str) -> None:
+    """Print completions for *prefix* from the system dictionary.
+
+    When stdout is a tty, uses Rich formatting.  When piped (e.g. fish
+    shell tab-completion), outputs plain text, one word per line.
+    """
+    words = [w for w in _complete_words(prefix) if w != prefix.lower()]
+    if not words:
+        return
+    if not sys.stdout.isatty():
+        for w in words:
+            sys.stdout.write(w + "\n")
+        return
+    out = Text("\n  💡 ", style=STYLE_ERROR)
+    out.append("你可能想查: ", style=STYLE_ERROR)
+    for i, w in enumerate(words):
+        if i:
+            out.append("  ")
+        out.append(w, style=STYLE_WORD)
+    console.print(out)
 
 
 def _is_cyrillic(text: str) -> bool:
@@ -71,7 +97,7 @@ def _lookup_cambridge(word: str) -> None:
         _die(f"网络请求失败，无法访问剑桥词典: {word}")
 
     if not parser.is_valid_entry():
-        _die(f"剑桥词典中未找到词条: {word}")
+        _die(f"剑桥词典中未找到词条: {word}", completions=word)
 
     _print(print_entry, parser.parse())
 
@@ -81,6 +107,16 @@ def main() -> None:
 
     if not args:
         _die("用法: camdict <单词>  (自动识别英语/俄语)")
+
+    # --_complete PREFIX — hidden flag for shell tab-completion
+    # Works with pip install and PyInstaller binary alike.
+    if args[0] == "--_complete":
+        # Skip optional "--" separator that some shells insert
+        rest = [a for a in args[1:] if a != "--"]
+        if rest:
+            for w in _complete_words(rest[0]):
+                sys.stdout.write(w + "\n")
+        return
 
     word = args[0]
 

@@ -9,6 +9,8 @@ a = Analysis(
         "lxml._elementpath",
         # lazy import inside main() — static analysis misses it
         "camdict.parsers.qianyix",
+        # shell tab-completion calls --_complete internally
+        "camdict.completer",
     ],
     hookspath=[],
     hooksconfig={},
@@ -42,7 +44,6 @@ a = Analysis(
         "curses",
         "sqlite3",
         "multiprocessing",
-        "concurrent",
         "asyncio",
         # stdlib xml — we use lxml, not stdlib
         "xml.etree",

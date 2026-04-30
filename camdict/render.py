@@ -98,8 +98,8 @@ def _render_entry(entry: dict) -> Text:
                 out.append("\n    ")
             if sense.get("definition_en"):
                 out.append(sense["definition_en"], style=STYLE_DEF_EN)
-                out.append("\n    ")
             if sense.get("definition_zh"):
+                out.append("\n    ")
                 out.append(sense["definition_zh"], style=STYLE_DEF_ZH)
         for ex in sense.get("examples", []):
             out.append("\n    \u2022 ", style=STYLE_BULLET)

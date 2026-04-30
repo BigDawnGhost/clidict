@@ -4,12 +4,15 @@ from rich.style import Style
 
 BASE_URL = "https://dictionary.cambridge.org"
 ENTRY_URL = BASE_URL + "/zhs/词典/英语-汉语-简体/{word}"
+ENTRY_URL_EN = BASE_URL + "/zhs/词典/英语/{word}"
+
+USER_AGENT = (
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+)
 
 HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-        "(KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
-    ),
+    "User-Agent": USER_AGENT,
     "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
 }
 

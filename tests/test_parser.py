@@ -274,14 +274,14 @@ def test_example_sibling_translation():
     assert ex["zh"] == "她跑得很快。"
 
 
-def test_example_without_translation_excluded():
+def test_example_without_translation_kept():
     html = """<html><body>
     <div class="def-block ddef_block">
       <div class="def ddef_d db">a word</div>
       <span class="trans dtrans dtrans-se">一个词</span>
       <div class="examp dexamp">No translation here.</div>
     </div></body></html>"""
-    assert CambridgeParser(html).get_senses()[0]["examples"] == []
+    assert CambridgeParser(html).get_senses()[0]["examples"] == [{"en": "No translation here.", "zh": ""}]
 
 
 def test_example_inline_styled_no_spurious_space():

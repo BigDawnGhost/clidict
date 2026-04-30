@@ -20,6 +20,9 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.packages.find]
 include = ["camdict*"]
 
+[tool.setuptools.package-data]
+camdict = ["data/american-english", "data/british-english"]
+
 [dependency-groups]
 dev = [
     "pytest>=9.0.3",

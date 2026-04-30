@@ -2,7 +2,7 @@ a = Analysis(
     ["camdict/__main__.py"],
     pathex=["."],
     binaries=[],
-    datas=[],
+    datas=[("camdict/data", "camdict/data")],
     hiddenimports=[
         # lxml C extensions not always auto-detected
         "lxml.etree",

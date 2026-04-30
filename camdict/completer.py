@@ -1,10 +1,10 @@
-"""Word autocompletion using system dictionaries from /usr/share/dict."""
+"""Word autocompletion using bundled dictionary files."""
 
 import bisect
 from pathlib import Path
 
-DICT_DIR = Path("/usr/share/dict")
-DICT_FILES = ("american-english", "british-english")
+_DATA_DIR = Path(__file__).parent / "data"
+_DICT_FILES = ("american-english", "british-english")
 
 # ── load ──
 
@@ -12,20 +12,13 @@ _words: list[str] = []
 
 
 def _load() -> list[str]:
-    """Load, merge, deduplicate, and filter system word lists.
-
-    Returns a sorted list of lowercase-only words (≥ 3 chars),
-    excluding possessives (``'s``) and single-letter entries.
-    """
     seen: set[str] = set()
-    for name in DICT_FILES:
-        path = DICT_DIR / name
+    for name in _DICT_FILES:
+        path = _DATA_DIR / name
         if not path.is_file():
             continue
         for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
             word = line.strip()
-            # Keep only all-lowercase common words, ≥ 3 chars,
-            # no possessives / contractions
             if len(word) >= 3 and word.islower() and word.isascii() and "'" not in word:
                 seen.add(word)
     return sorted(seen)

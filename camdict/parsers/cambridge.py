@@ -177,7 +177,7 @@ class CambridgeParser:
         # Examples
         for ex_div in block.xpath(
             './/div[contains(@class,"examp")]'
-            '| .//span[contains(@class,"eg")]'
+            '| .//span[contains(concat(" ",@class," ")," eg ")]'
             '[not(parent::div[contains(@class,"examp")])]'
         ):
             en_parts: list[str] = []

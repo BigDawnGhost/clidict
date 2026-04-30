@@ -64,7 +64,7 @@ def _render_entry(entry: dict) -> Text:
             if phr_i == 0:
                 out.append("\n\n短语", style=STYLE_SECTION)
             phr_i += 1
-            out.append(f"\n{phr_i}.  ", style=STYLE_INDEX)
+            out.append(f"\n{phr_i}. ", style=STYLE_INDEX)
             out.append(phrase, style=STYLE_PHRASE)
             if sense.get("level"):
                 out.append(f" [{sense['level']}]", style=STYLE_LEVEL)
@@ -85,11 +85,13 @@ def _render_entry(entry: dict) -> Text:
                 out.append(sense["definition_zh"], style=STYLE_DEF_ZH)
         else:
             reg_i += 1
-            out.append(f"\n{reg_i}.  ", style=STYLE_INDEX)
+            out.append(f"\n{reg_i}. ", style=STYLE_INDEX)
             if sense.get("level"):
                 out.append(f"[{sense['level']}]", style=STYLE_LEVEL)
             if sense.get("grammar"):
-                out.append(f" {sense['grammar']}", style=STYLE_GRAMMAR)
+                if sense.get("level"):
+                    out.append(" ")
+                out.append(sense["grammar"], style=STYLE_GRAMMAR)
             if sense.get("usage"):
                 if sense.get("level") or sense.get("grammar"):
                     out.append(" ")

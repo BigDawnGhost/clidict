@@ -233,3 +233,39 @@ def print_qianyix_entry(entry: dict) -> None:
             for tbl in base["conjugations"]:
                 rich_tbl = _build_conj_table(tbl["label"], tbl["rows"])
                 console.print(rich_tbl)
+
+
+# ═══════════════════════════════════════════════════════════════════
+#  Bing Dictionary (Cambridge fallback)
+# ═══════════════════════════════════════════════════════════════════
+
+
+def print_bing_entry(entry: dict) -> None:
+    """Render a Bing Dictionary entry (fallback when Cambridge misses)."""
+    out = Text()
+    out.append(entry["word"], style=STYLE_WORD)
+
+    pron = entry.get("pronunciation", {})
+    if pron.get("UK") or pron.get("US"):
+        out.append("\n")
+        if pron.get("UK"):
+            out.append("UK ", style=STYLE_UK)
+            out.append(pron["UK"], style=STYLE_IPA)
+        if pron.get("US"):
+            if pron.get("UK"):
+                out.append("  ")
+            out.append("US ", style=STYLE_US)
+            out.append(pron["US"], style=STYLE_IPA)
+
+    infl = entry.get("inflections", "")
+    if infl:
+        out.append("\n")
+        out.append(infl, style=STYLE_GRAMMAR)
+
+    for item in entry.get("pos_summary", []):
+        out.append(f"\n  {item['pos']} ", style=STYLE_POS)
+        out.append(item["zh"], style=STYLE_DEF_ZH)
+
+    out.append("\n\n  ", style=STYLE_GRAMMAR)
+    out.append("[Bing 词典]", style=STYLE_GRAMMAR)
+    console.print(out)

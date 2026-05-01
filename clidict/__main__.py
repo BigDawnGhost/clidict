@@ -1,7 +1,7 @@
-"""CLI entry point — ``camdict <word>``.
+"""CLI entry point — ``clidict <word>``.
 
-camdict hello  → Cambridge English-Chinese dictionary (auto-detected)
-camdict пока   → 千亿词霸 Russian-Chinese dictionary (auto-detected)
+clidict hello  → Cambridge English-Chinese dictionary (auto-detected)
+clidict пока   → 千亿词霸 Russian-Chinese dictionary (auto-detected)
 """
 
 import logging
@@ -15,11 +15,11 @@ import requests
 from rich.pager import Pager
 from rich.text import Text
 
-from camdict.completer import complete as _complete_words
-from camdict.config import ENTRY_URL, ENTRY_URL_EN, HEADERS, STYLE_ERROR, STYLE_WORD
-from camdict.http import fetch as _raw_fetch
-from camdict.parsers.cambridge import CambridgeParser
-from camdict.render import console, print_bing_entry, print_entry, print_qianyix_entry
+from clidict.completer import complete as _complete_words
+from clidict.config import ENTRY_URL, ENTRY_URL_EN, HEADERS, STYLE_ERROR, STYLE_WORD
+from clidict.http import fetch as _raw_fetch
+from clidict.parsers.cambridge import CambridgeParser
+from clidict.render import console, print_bing_entry, print_entry, print_qianyix_entry
 
 logger = logging.getLogger(__name__)
 
@@ -81,7 +81,7 @@ def _print(render_fn, entry: dict) -> None:
 
 def _lookup_qianyix(word: str) -> None:
     """Look up *word* on 千亿词霸, render and exit."""
-    from camdict.parsers.qianyix import QianyixParser
+    from clidict.parsers.qianyix import QianyixParser
 
     try:
         parser = QianyixParser.from_url(word)
@@ -100,7 +100,7 @@ def _lookup_cambridge(word: str) -> None:
     Priority: Cambridge zh > Cambridge en > Bing.
     zh always wins; en only used when zh misses.
     """
-    from camdict.parsers.bing import BingParser
+    from clidict.parsers.bing import BingParser
 
     cam_zh_result: dict | None = None
     cam_en_result: dict | None = None
@@ -180,7 +180,7 @@ def main() -> None:
     args = sys.argv[1:]
 
     if not args:
-        _die("用法: camdict <单词>  (自动识别英语/俄语)")
+        _die("用法: clidict <单词>  (自动识别英语/俄语)")
 
     # --_complete PREFIX — hidden flag for shell tab-completion
     if args[0] == "--_complete":

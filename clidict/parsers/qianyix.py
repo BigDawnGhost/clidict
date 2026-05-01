@@ -20,8 +20,8 @@ from urllib.parse import quote
 
 from lxml import html
 
-from camdict.config import USER_AGENT
-from camdict.http import fetch
+from clidict.config import USER_AGENT
+from clidict.http import fetch
 
 BASE_URL = "https://w.qianyix.com/index.php"
 SEARCH_URL = BASE_URL + "?q={word}"

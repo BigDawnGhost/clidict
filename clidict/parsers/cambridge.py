@@ -5,8 +5,8 @@ from concurrent.futures import ThreadPoolExecutor
 
 from lxml import html
 
-from camdict.config import ENTRY_URL, ENTRY_URL_EN, HEADERS
-from camdict.http import fetch
+from clidict.config import ENTRY_URL, ENTRY_URL_EN, HEADERS
+from clidict.http import fetch
 
 
 def _text(el, default: str = "") -> str:

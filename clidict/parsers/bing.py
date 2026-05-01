@@ -9,8 +9,8 @@ import re
 
 from lxml import html
 
-from camdict.config import HEADERS
-from camdict.http import fetch
+from clidict.config import HEADERS
+from clidict.http import fetch
 
 SEARCH_URL = "https://cn.bing.com/dict/search?q={word}"
 BING_COOKIES = {"_EDGE_S": "mkt=zh-cn"}

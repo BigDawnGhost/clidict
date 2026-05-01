@@ -4,7 +4,7 @@ from rich.console import Console
 from rich.table import Table as RichTable
 from rich.text import Text
 
-from camdict.config import (
+from clidict.config import (
     STYLE_BULLET,
     STYLE_DEF_EN,
     STYLE_DEF_ZH,

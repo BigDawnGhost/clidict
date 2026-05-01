@@ -19,9 +19,9 @@ uv tool install git+https://github.com/BigDawnGhost/clidict
 ## 用法
 
 ```sh
-camdict hello
-camdict phrasal verb
-camdict привет
+clidict hello
+clidict phrasal verb
+clidict привет
 ```
 
 剑桥词条展示 CEFR 等级、语法标注、英美发音、中文释义和例句。俄语词条包含重音标注、专业含义及词形变化表。
@@ -41,14 +41,14 @@ camdict привет
 **Fish：**
 
 ```sh
-cp completions/camdict.fish ~/.config/fish/completions/
+cp completions/clidict.fish ~/.config/fish/completions/
 ```
 <img width="1280" height="720" alt="图片" src="https://github.com/user-attachments/assets/86be2962-8b3a-455a-9959-f8fedaeaad60" />
 
 **Bash：**
 
 ```sh
-echo 'source /path/to/completions/camdict.bash' >> ~/.bashrc
+echo 'source /path/to/completions/clidict.bash' >> ~/.bashrc
 ```
 
 补全词表来自内置词典（american-english + british-english），`pip install` 和独立二进制均可用。候选词按长度升序排列。
@@ -58,8 +58,8 @@ echo 'source /path/to/completions/camdict.bash' >> ~/.bashrc
 需要 [PyInstaller](https://pyinstaller.org)：
 
 ```sh
-uv run pyinstaller camdict.spec
-# 输出在 dist/camdict
+uv run pyinstaller clidict.spec
+# 输出在 dist/clidict
 ```
 
 ## 开发

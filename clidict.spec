@@ -1,16 +1,16 @@
 a = Analysis(
-    ["camdict/__main__.py"],
+    ["clidict/__main__.py"],
     pathex=["."],
     binaries=[],
-    datas=[("camdict/data", "camdict/data")],
+    datas=[("clidict/data", "clidict/data")],
     hiddenimports=[
         # lxml C extensions not always auto-detected
         "lxml.etree",
         "lxml._elementpath",
         # lazy import inside main() — static analysis misses it
-        "camdict.parsers.qianyix",
+        "clidict.parsers.qianyix",
         # shell tab-completion calls --_complete internally
-        "camdict.completer",
+        "clidict.completer",
     ],
     hookspath=[],
     hooksconfig={},
@@ -64,7 +64,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name="camdict",
+    name="clidict",
     debug=False,
     bootloader_ignore_signals=False,
     strip=True,

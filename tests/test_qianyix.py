@@ -1,6 +1,6 @@
-"""Robustness tests for camdict.parsers.qianyix."""
+"""Robustness tests for clidict.parsers.qianyix."""
 
-from camdict.parsers.qianyix import QianyixParser, _extract_stress, _text
+from clidict.parsers.qianyix import QianyixParser, _extract_stress, _text
 
 
 # ── _text helper ──────────────────────────────────────────────────────────

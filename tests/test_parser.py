@@ -1,8 +1,8 @@
-"""Robustness tests for camdict.parsers.cambridge.CambridgeParser."""
+"""Robustness tests for clidict.parsers.cambridge.CambridgeParser."""
 
 from lxml import html as lxml_html
 
-from camdict.parsers.cambridge import CambridgeParser, _text
+from clidict.parsers.cambridge import CambridgeParser, _text
 
 # ── _text helper ──────────────────────────────────────────────────────────
 def test_text_none_returns_default():

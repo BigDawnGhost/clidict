@@ -1,8 +1,8 @@
-"""Robustness tests for camdict.parsers.bing.BingParser."""
+"""Robustness tests for clidict.parsers.bing.BingParser."""
 
 from lxml import html as lxml_html
 
-from camdict.parsers.bing import BingParser, _parse_pron, _text
+from clidict.parsers.bing import BingParser, _parse_pron, _text
 
 # ── _text helper ──────────────────────────────────────────────────────────
 

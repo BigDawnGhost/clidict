@@ -39,16 +39,16 @@ def _ensure_loaded() -> None:
 
 
 def complete(prefix: str, limit: int = 20) -> list[str]:
-    """Return words starting with *prefix* (case-insensitive)."""
+    """Return words starting with *prefix*, shortest first (case-insensitive)."""
     _ensure_loaded()
     p = prefix.lower()
     lo = bisect.bisect_left(_words, p)
     hi = lo
     while hi < len(_words) and _words[hi].startswith(p):
         hi += 1
-        if hi - lo >= limit:
-            break
-    return _words[lo:hi]
+    candidates = _words[lo:hi]
+    candidates.sort(key=lambda w: (len(w), w))
+    return candidates[:limit]
 
 
 if __name__ == "__main__":

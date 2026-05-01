@@ -10,4 +10,4 @@ complete -c camdict -f
 
 # Dynamic word completions from bundled dict files.
 # Uses --_complete flag, works with pip install and PyInstaller binary.
-complete -c camdict -a '(camdict --_complete -- (commandline -ct) 2>/dev/null)'
+complete -c camdict -k -a '(camdict --_complete -- (commandline -ct) 2>/dev/null)'

@@ -1,21 +1,21 @@
-# camdict
+# clidict
 
-Terminal dictionary lookup. Automatically routes by language:
+终端词典，根据语言自动路由：
 
-- **English** → [Cambridge Dictionary](https://dictionary.cambridge.org) (英汉双语)
-- **Russian** → [千亿词霸](https://w.qianyix.com) (俄汉双语)
+- **英语** → [Cambridge Dictionary](https://dictionary.cambridge.org)（英汉双语）
+- **俄语** → [千亿词霸](https://w.qianyix.com)（俄汉双语）
 
-Detection is character-based: any Cyrillic input goes to 千亿词霸, everything else to Cambridge.
+识别方式基于字符：西里尔字母走千亿词霸，其余走剑桥。
 
-## Install
+## 安装
 
 ```sh
-uv tool install git+https://github.com/BigDawnGhost/camdict
-# or
+uv tool install git+https://github.com/BigDawnGhost/clidict
+# 或
 pip install .
 ```
 
-## Usage
+## 用法
 
 ```sh
 camdict hello
@@ -23,44 +23,44 @@ camdict phrasal verb
 camdict привет
 ```
 
-Cambridge entries show CEFR level, grammar codes, UK/US pronunciation, Chinese translations, and example sentences. Russian entries include stress marks, industry meanings, and conjugation/declension tables.
+剑桥词条展示 CEFR 等级、语法标注、英美发音、中文释义和例句。俄语词条包含重音标注、专业含义及词形变化表。
 
-### Lookup flow
+### 查询流程
 
-3 HTTP requests fire in parallel: Cambridge (zh), Cambridge (en), and Bing. Priority order:
+3 个 HTTP 请求并行发出：剑桥（中英）、剑桥（纯英）、Bing。优先级：
 
-1. Cambridge Chinese-English (fastest path)
-2. Cambridge English-only
-3. [Bing Dictionary](https://cn.bing.com/dict) (fallback)
+1. 剑桥中英版（最快路径）
+2. 剑桥纯英版
+3. [Bing 词典](https://cn.bing.com/dict)（兜底）
 
-When Cambridge misses a word (e.g. `genshin`), Bing takes over automatically.
+当剑桥没有收录时（如 `genshin`），自动切换到 Bing。
 
-## Shell completion
+## 补全
 
-**Fish:**
+**Fish：**
 
 ```sh
 cp completions/camdict.fish ~/.config/fish/completions/
 ```
 
-**Bash:**
+**Bash：**
 
 ```sh
 echo 'source /path/to/completions/camdict.bash' >> ~/.bashrc
 ```
 
-Completions are sourced from bundled word lists (american-english + british-english) and work with both `pip install` and the standalone binary.
+补全词表来自内置词典（american-english + british-english），`pip install` 和独立二进制均可用。候选词按长度升序排列。
 
-## Build standalone binary
+## 打包独立二进制
 
-Requires [PyInstaller](https://pyinstaller.org):
+需要 [PyInstaller](https://pyinstaller.org)：
 
 ```sh
 uv run pyinstaller camdict.spec
-# binary at dist/camdict
+# 输出在 dist/camdict
 ```
 
-## Development
+## 开发
 
 ```sh
 uv sync

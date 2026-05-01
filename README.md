@@ -1,4 +1,5 @@
 # clidict
+<img width="1280" height="720" alt="图片" src="https://github.com/user-attachments/assets/2d3bbd85-57dd-4308-b2a2-c3bb623b82ec" />
 
 终端词典，根据语言自动路由：
 
@@ -6,6 +7,8 @@
 - **俄语** → [千亿词霸](https://w.qianyix.com)（俄汉双语）
 
 识别方式基于字符：西里尔字母走千亿词霸，其余走剑桥。
+<img width="1280" height="720" alt="图片" src="https://github.com/user-attachments/assets/db603c07-1505-4ae1-8674-66b0ecb5bc59" />
+
 
 ## 安装
 
@@ -40,6 +43,7 @@ camdict привет
 ```sh
 cp completions/camdict.fish ~/.config/fish/completions/
 ```
+<img width="1280" height="720" alt="图片" src="https://github.com/user-attachments/assets/86be2962-8b3a-455a-9959-f8fedaeaad60" />
 
 **Bash：**
 

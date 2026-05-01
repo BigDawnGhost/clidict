@@ -1,7 +1,7 @@
 # clidict
-<img width="1280" height="720" alt="图片" src="https://github.com/user-attachments/assets/2d3bbd85-57dd-4308-b2a2-c3bb623b82ec" />
 
-终端词典，根据语言自动路由：
+终端词典，根据语言自动路由，本项目纯vibe coding，欢迎改进。
+<img width="1280" height="720" alt="图片" src="https://github.com/user-attachments/assets/2d3bbd85-57dd-4308-b2a2-c3bb623b82ec" />
 
 - **英语** → [Cambridge Dictionary](https://dictionary.cambridge.org)（英汉双语）
 - **俄语** → [千亿词霸](https://w.qianyix.com)（俄汉双语）

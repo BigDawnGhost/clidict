@@ -45,5 +45,6 @@ def fetch(
 
         last_exc = requests.exceptions.HTTPError(response=resp)
 
-    assert last_exc is not None
+    if last_exc is None:
+        raise RuntimeError("No exception recorded after retry loop exhausted")
     raise last_exc

@@ -136,7 +136,7 @@ def _lookup_cambridge(word: str) -> None:
                     "pos_summary": p.get_pos_summary(),
                 }
         except requests.RequestException:
-            pass
+            logger.debug("Bing request failed for %r", word, exc_info=True)
 
     with ThreadPoolExecutor(max_workers=3) as ex:
         futures = {
@@ -153,10 +153,12 @@ def _lookup_cambridge(word: str) -> None:
                 logger.debug(
                     "Unexpected error in future %s", futures[fut], exc_info=True
                 )
-            # zh wins immediately — cancel the rest
+            # zh wins immediately — cancel the rest.
+            # f.cancel() returns False if the task is already running; that's
+            # fine — we just stop waiting for results, not stop execution.
             if cam_zh_result is not None:
                 for f in futures:
-                    f.cancel()
+                    _ = f.cancel()
                 _print(print_entry, cam_zh_result)
                 return
             # zh done & missed, en ready — use it, don't wait for Bing

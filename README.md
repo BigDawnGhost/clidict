@@ -11,8 +11,6 @@
 
 ```sh
 uv tool install git+https://github.com/BigDawnGhost/clidict
-# 或
-pip install .
 ```
 
 ## 用法

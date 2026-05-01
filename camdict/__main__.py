@@ -129,12 +129,14 @@ def _lookup_cambridge(word: str) -> None:
         try:
             p = BingParser.from_url(word)
             if p.is_valid_entry():
-                bing_result = {
-                    "word": p.get_headword(),
-                    "pronunciation": p.get_pronunciation(),
-                    "inflections": p.get_inflections(),
-                    "pos_summary": p.get_pos_summary(),
-                }
+                pos = p.get_pos_summary()
+                if pos:
+                    bing_result = {
+                        "word": p.get_headword(),
+                        "pronunciation": p.get_pronunciation(),
+                        "inflections": p.get_inflections(),
+                        "pos_summary": pos,
+                    }
         except requests.RequestException:
             logger.debug("Bing request failed for %r", word, exc_info=True)
 

@@ -62,6 +62,18 @@ uv run pyinstaller clidict.spec
 # 输出在 dist/clidict
 ```
 
+将 `dist/` 目录加入 PATH 以使补全生效：
+
+**Fish** (`~/.config/fish/config.fish`)：
+```fish
+export PATH="/path/to/clidict/dist:$PATH"
+```
+
+**Bash** (`~/.bashrc`)：
+```sh
+export PATH="/path/to/clidict/dist:$PATH"
+```
+
 ## 开发
 
 ```sh

@@ -140,35 +140,37 @@ def _lookup_cambridge(word: str) -> None:
         except requests.RequestException:
             logger.debug("Bing request failed for %r", word, exc_info=True)
 
-    with ThreadPoolExecutor(max_workers=3) as ex:
-        futures = {
-            ex.submit(_cam_zh): "zh",
-            ex.submit(_cam_en): "en",
-            ex.submit(_bing): "bing",
-        }
-        for fut in as_completed(futures):
-            try:
-                fut.result()
-            except requests.RequestException:
-                pass
-            except Exception:
-                logger.debug(
-                    "Unexpected error in future %s", futures[fut], exc_info=True
-                )
-            # zh wins immediately — cancel the rest.
-            # f.cancel() returns False if the task is already running; that's
-            # fine — we just stop waiting for results, not stop execution.
-            if cam_zh_result is not None:
-                for f in futures:
-                    _ = f.cancel()
-                _print(print_entry, cam_zh_result)
-                return
-            # zh done & missed, en ready — use it, don't wait for Bing
-            if cam_en_result is not None and zh_done:
-                _print(print_entry, cam_en_result)
-                return
+    ex = ThreadPoolExecutor(max_workers=3)
+    futures = {
+        ex.submit(_cam_zh): "zh",
+        ex.submit(_cam_en): "en",
+        ex.submit(_bing): "bing",
+    }
+    render_fn = None
+    result = None
+    for fut in as_completed(futures):
+        try:
+            fut.result()
+        except requests.RequestException:
+            pass
+        except Exception:
+            logger.debug(
+                "Unexpected error in future %s", futures[fut], exc_info=True
+            )
+        if cam_zh_result is not None:
+            result, render_fn = cam_zh_result, print_entry
+            break
+        if cam_en_result is not None and zh_done:
+            result, render_fn = cam_en_result, print_entry
+            break
 
-    # Both Cambridge missed — use Bing if available
+    # Don't wait for remaining requests — worker threads are daemon threads.
+    ex.shutdown(wait=False, cancel_futures=True)
+
+    if result is not None:
+        _print(render_fn, result)
+        return
+
     if bing_result is not None:
         _print(print_bing_entry, bing_result)
         return

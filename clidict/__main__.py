@@ -6,9 +6,10 @@ clidict пока   → 千亿词霸 Russian-Chinese dictionary (auto-detected)
 
 import logging
 import os
+import queue
 import subprocess
 import sys
-from concurrent.futures import ThreadPoolExecutor, as_completed
+import threading
 from typing import NoReturn
 
 import requests
@@ -102,23 +103,22 @@ def _lookup_cambridge(word: str) -> None:
     """
     from clidict.parsers.bing import BingParser
 
+    word = word.strip().lower()
     cam_zh_result: dict | None = None
     cam_en_result: dict | None = None
     bing_result: dict | None = None
-    zh_done: bool = False
 
     def _cam_zh():
-        nonlocal cam_zh_result, zh_done
-        url = ENTRY_URL.format(word=word.strip().lower())
+        nonlocal cam_zh_result
+        url = ENTRY_URL.format(word=word)
         resp = _raw_fetch(url, headers=HEADERS)
         p = CambridgeParser(resp.text, url=url)
         if p.is_valid_entry():
             cam_zh_result = p.parse()
-        zh_done = True
 
     def _cam_en():
         nonlocal cam_en_result
-        url = ENTRY_URL_EN.format(word=word.strip().lower())
+        url = ENTRY_URL_EN.format(word=word)
         resp = _raw_fetch(url, headers=HEADERS)
         p = CambridgeParser(resp.text, url=url, en_only=True)
         if p.is_valid_entry():
@@ -126,46 +126,42 @@ def _lookup_cambridge(word: str) -> None:
 
     def _bing():
         nonlocal bing_result
-        try:
-            p = BingParser.from_url(word)
-            if p.is_valid_entry():
-                pos = p.get_pos_summary()
-                if pos:
-                    bing_result = {
-                        "word": p.get_headword(),
-                        "pronunciation": p.get_pronunciation(),
-                        "inflections": p.get_inflections(),
-                        "pos_summary": pos,
-                    }
-        except requests.RequestException:
-            logger.debug("Bing request failed for %r", word, exc_info=True)
+        p = BingParser.from_url(word)
+        if p.is_valid_entry():
+            pos = p.get_pos_summary()
+            if pos:
+                bing_result = {
+                    "word": p.get_headword(),
+                    "pronunciation": p.get_pronunciation(),
+                    "inflections": p.get_inflections(),
+                    "pos_summary": pos,
+                }
 
-    ex = ThreadPoolExecutor(max_workers=3)
-    futures = {
-        ex.submit(_cam_zh): "zh",
-        ex.submit(_cam_en): "en",
-        ex.submit(_bing): "bing",
-    }
-    render_fn = None
-    result = None
-    for fut in as_completed(futures):
+    # Raw daemon threads avoid the ThreadPoolExecutor atexit join delay.
+    q: queue.Queue[str] = queue.Queue()
+
+    def _run(name: str, fn) -> None:
         try:
-            fut.result()
-        except requests.RequestException:
-            pass
+            fn()
         except Exception:
-            logger.debug(
-                "Unexpected error in future %s", futures[fut], exc_info=True
-            )
+            logger.debug("Request %r failed", name, exc_info=True)
+        finally:
+            q.put(name)
+
+    for name, fn in (("zh", _cam_zh), ("en", _cam_en), ("bing", _bing)):
+        threading.Thread(target=_run, args=(name, fn), daemon=True).start()
+
+    completed: set[str] = set()
+    result = None
+    render_fn = None
+    for _ in range(3):
+        completed.add(q.get(timeout=10))
         if cam_zh_result is not None:
             result, render_fn = cam_zh_result, print_entry
             break
-        if cam_en_result is not None and zh_done:
+        if cam_en_result is not None and "zh" in completed:
             result, render_fn = cam_en_result, print_entry
             break
-
-    # Don't wait for remaining requests — worker threads are daemon threads.
-    ex.shutdown(wait=False, cancel_futures=True)
 
     if result is not None:
         _print(render_fn, result)

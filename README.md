@@ -1,12 +1,14 @@
 # clidict
 
 终端词典，根据语言自动路由，本项目纯vibe coding，欢迎改进。
+
 <img width="1280" height="720" alt="图片" src="https://github.com/user-attachments/assets/2d3bbd85-57dd-4308-b2a2-c3bb623b82ec" />
 
 - **英语** → [Cambridge Dictionary](https://dictionary.cambridge.org)（英汉双语）
 - **俄语** → [千亿词霸](https://w.qianyix.com)（俄汉双语）
 
 识别方式基于字符：西里尔字母走千亿词霸，其余走剑桥。
+
 <img width="1280" height="720" alt="图片" src="https://github.com/user-attachments/assets/db603c07-1505-4ae1-8674-66b0ecb5bc59" />
 
 
@@ -17,6 +19,7 @@
 ```sh
 git clone https://github.com/BigDawnGhost/clidict
 cd clidict
+uv sync
 uv run pyinstaller clidict.spec
 # 二进制输出在 dist/clidict
 ```

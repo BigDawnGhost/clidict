@@ -3,8 +3,8 @@
 from rich.style import Style
 
 BASE_URL = "https://dictionary.cambridge.org"
-ENTRY_URL = BASE_URL + "/zhs/词典/英语-汉语-简体/{word}"
-ENTRY_URL_EN = BASE_URL + "/zhs/词典/英语/{word}"
+ENTRY_URL = BASE_URL + "/dictionary/english-chinese-simplified/{word}"
+ENTRY_URL_EN = BASE_URL + "/dictionary/english/{word}"
 
 USER_AGENT = (
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "

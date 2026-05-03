@@ -16,6 +16,12 @@
 uv tool install git+https://github.com/BigDawnGhost/clidict
 ```
 
+Windows 下需要单独安装 `less`：
+
+```sh
+winget install jftuga.less
+```
+
 ## 用法
 
 ```sh

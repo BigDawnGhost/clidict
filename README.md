@@ -12,14 +12,31 @@
 
 ## 安装
 
+克隆仓库后用 [PyInstaller](https://pyinstaller.org) 打包：
+
 ```sh
-uv tool install git+https://github.com/BigDawnGhost/clidict
+git clone https://github.com/BigDawnGhost/clidict
+cd clidict
+uv run pyinstaller clidict.spec
+# 二进制输出在 dist/clidict
 ```
 
 Windows 下需要单独安装 `less`：
 
 ```sh
 winget install jftuga.less
+```
+
+将 `dist/` 目录加入 PATH：
+
+**Fish** (`~/.config/fish/config.fish`)：
+```fish
+export PATH="/path/to/clidict/dist:$PATH"
+```
+
+**Bash** (`~/.bashrc`)：
+```sh
+export PATH="/path/to/clidict/dist:$PATH"
 ```
 
 ## 用法
@@ -44,6 +61,8 @@ clidict привет
 
 ## 补全
 
+将 `dist/` 加入 PATH 后：
+
 **Fish：**
 
 ```sh
@@ -54,31 +73,10 @@ cp completions/clidict.fish ~/.config/fish/completions/
 **Bash：**
 
 ```sh
-echo 'source /path/to/completions/clidict.bash' >> ~/.bashrc
+echo 'source /path/to/clidict/completions/clidict.bash' >> ~/.bashrc
 ```
 
-补全词表来自内置词典（american-english + british-english），`pip install` 和独立二进制均可用。候选词按长度升序排列。
-
-## 打包独立二进制
-
-需要 [PyInstaller](https://pyinstaller.org)：
-
-```sh
-uv run pyinstaller clidict.spec
-# 输出在 dist/clidict
-```
-
-将 `dist/` 目录加入 PATH 以使补全生效：
-
-**Fish** (`~/.config/fish/config.fish`)：
-```fish
-export PATH="/path/to/clidict/dist:$PATH"
-```
-
-**Bash** (`~/.bashrc`)：
-```sh
-export PATH="/path/to/clidict/dist:$PATH"
-```
+候选词按长度升序排列。
 
 ## 开发
 

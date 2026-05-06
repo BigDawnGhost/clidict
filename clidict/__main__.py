@@ -155,7 +155,10 @@ def _lookup_cambridge(word: str) -> None:
     result = None
     render_fn = None
     for _ in range(3):
-        completed.add(q.get(timeout=10))
+        try:
+            completed.add(q.get(timeout=15))
+        except queue.Empty:
+            _die("网络请求超时")
         if cam_zh_result is not None:
             result, render_fn = cam_zh_result, print_entry
             break

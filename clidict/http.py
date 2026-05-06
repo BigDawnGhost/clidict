@@ -8,9 +8,9 @@ import requests
 # Status codes that warrant a retry
 _RETRY_STATUS = frozenset({429, 500, 502, 503, 504})
 
-_MAX_RETRIES = 3
-_BACKOFF_BASE = 1.0  # seconds; delays: 1s, 2s, 4s
-_BACKOFF_MAX = 8.0
+_MAX_RETRIES = 1
+_BACKOFF_BASE = 1.0
+_BACKOFF_MAX = 2.0
 _JITTER = 0.3  # ± uniform jitter added to each delay
 
 

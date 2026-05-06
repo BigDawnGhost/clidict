@@ -44,7 +44,11 @@ class CambridgeParser:
         "abbreviation",
     }
 
-    _PLACEHOLDER_HW: set[str] = {"剑桥词典：英语-中文(简体)翻译", "剑桥英语词典：意思、解释及翻译", ""}
+    _PLACEHOLDER_HW: set[str] = {
+        "Cambridge English–Chinese (Simplified) Dictionary: English to Mandarin Chinese",
+        "Cambridge English Dictionary: Meanings & Definitions",
+        "",
+    }
 
     _USAGE_LABELS: tuple[str, ...] = (
         "informal",

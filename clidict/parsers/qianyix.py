@@ -68,7 +68,7 @@ class QianyixParser:
 
     @classmethod
     def from_url(cls, word: str, timeout: int = 10) -> "QianyixParser":
-        normalized = word.strip().replace("́", "")
+        normalized = word.strip().lower().replace("́", "")
         url = SEARCH_URL.format(word=quote(normalized))
         resp = fetch(url, headers=HEADERS, timeout=timeout)
         return cls(resp.content, word=word.strip())

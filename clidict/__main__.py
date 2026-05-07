@@ -191,7 +191,7 @@ def main() -> None:
                 sys.stdout.write(w + "\n")
         return
 
-    word = args[0]
+    word = " ".join(args)
 
     if _is_cyrillic(word):
         _lookup_qianyix(word)

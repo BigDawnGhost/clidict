@@ -16,7 +16,6 @@ DOM structure (each entry = base div + following sibling panels):
 """
 
 import re
-import unicodedata
 from urllib.parse import quote
 
 from lxml import html
@@ -69,10 +68,7 @@ class QianyixParser:
 
     @classmethod
     def from_url(cls, word: str, timeout: int = 10) -> "QianyixParser":
-        normalized = "".join(
-            c for c in unicodedata.normalize("NFD", word.strip())
-            if unicodedata.category(c) != "Mn"
-        )
+        normalized = word.strip().replace("́", "")
         url = SEARCH_URL.format(word=quote(normalized))
         resp = fetch(url, headers=HEADERS, timeout=timeout)
         return cls(resp.content, word=word.strip())

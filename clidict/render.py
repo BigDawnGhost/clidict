@@ -131,7 +131,7 @@ def _stress_text(word: str) -> Text:
     while i < len(word):
         ch = word[i]
         if i + 1 < len(word) and word[i + 1] == "\u0301":
-            out.append(ch, style=STYLE_STRESS)
+            out.append(ch + "́", style=STYLE_STRESS)
             i += 2
         else:
             out.append(ch, style=STYLE_RU_WORD)
